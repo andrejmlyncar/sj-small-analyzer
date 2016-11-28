@@ -8,6 +8,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import sk.fiit.sj.small.analyzer.Analyzer;
+import sk.fiit.sj.small.analyzer.impl.SmallAnalyzer;
 import sk.fiit.sj.small.analyzer.servlet.util.ServletDataReader;
 
 /**
@@ -25,10 +27,11 @@ public class AnalyzeServlet extends HttpServlet {
         try {
             JsonObject object = ServletDataReader.getJsonData(request);
             System.out.println(object.getString("text"));
+            Analyzer analyzer = new SmallAnalyzer();
+            analyzer.validateInput(object.getString("text"));
             response.setStatus(200);
             response.getWriter().write(Json.createObjectBuilder().add("status", "success").build().toString());      
         } catch (SmallAnalyzerException ex) {
-            response.setStatus(500);
             response.getWriter().write(Json.createObjectBuilder().add("status", "failed").add("error", ex.getMessage()).build().toString());
         }
     }

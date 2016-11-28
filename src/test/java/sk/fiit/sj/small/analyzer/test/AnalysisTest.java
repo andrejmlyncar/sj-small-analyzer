@@ -16,7 +16,7 @@ public class AnalysisTest {
         Analyzer analyzer = new SmallAnalyzer();
 
         analyzer.validateInput("BEGIN\n"
-                + "READ(a,b1c,c);Write(a, c, a3); IF TRUE THEN c:=1321312; a:=a+1;END");
+                + "READ(a,b1c,c);Write(a, c, a3); IF TRUE THEN c:=1321312;; a:=a+1;END");
            
     }
     

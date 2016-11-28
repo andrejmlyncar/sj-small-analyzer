@@ -53,10 +53,10 @@ public class GrammarFactory {
         GrammarRule rule39 = new GrammarRule(39, "ident'", new String[]{"letter", "ident'"});
         GrammarRule rule40 = new GrammarRule(40, "ident'", new String[]{"E"});
 
-        GrammarRule rule41 = new GrammarRule(41, "number", new String[]{"+", "digit09", "number'"});
-        GrammarRule rule42 = new GrammarRule(42, "number", new String[]{"-", "digit09", "number'"});
+        GrammarRule rule41 = new GrammarRule(41, "number", new String[]{"+", "digit19", "number'"});
+        GrammarRule rule42 = new GrammarRule(42, "number", new String[]{"-", "digit19", "number'"});
         GrammarRule rule43 = new GrammarRule(43, "number", new String[]{"digit19", "number'"});
-        GrammarRule rule44 = new GrammarRule(44, "number'", new String[]{"digit19", "number'"});
+        GrammarRule rule44 = new GrammarRule(44, "number'", new String[]{"digit09", "number'"});
         GrammarRule rule45 = new GrammarRule(45, "number'", new String[]{"E"});
         GrammarRule rule46 = new GrammarRule(46, "digit09", new String[]{"digit19"});
         GrammarRule rule47 = new GrammarRule(47, "digit19", new String[]{"digit09"});
@@ -211,7 +211,7 @@ public class GrammarFactory {
         grammar.addLl1TableRow(row);
 
         row = new Ll1TableRow("number'");
-        row.addLl1TableRecord(new Ll1TableRecord("digit19", rule44));
+        row.addLl1TableRecord(new Ll1TableRecord("digit09", rule44));
         row.addLl1TableRecord(new Ll1TableRecord(";", rule45));
         row.addLl1TableRecord(new Ll1TableRecord(",", rule45));
         row.addLl1TableRecord(new Ll1TableRecord("+", rule45));

@@ -37,7 +37,6 @@ public class SmallAnalyzer implements Analyzer {
             System.out.println("Starting to pop " + token);
             while (stack.length != 0) {
                 String[] tmpStack = updateStack(stack, grammar.getLl1Table(), token);
-
                 if (tmpStack.length >= stack.length) {
                     stack = tmpStack;
                     stack = removeEpsilon(stack);
@@ -56,14 +55,19 @@ public class SmallAnalyzer implements Analyzer {
         int stackIndex = 0;
         for (String stackValue : currentStack) {
             if (stackValue.equals(token) || checkIfLetterMatchesTerminal(token, stackValue) || checkIfDigit19MatchesTerminal(token, stackValue) || checkIfDigitMatchesTerminal(token, stackValue)) {
-                System.out.println("Poping value " + token);
-                String[] popedStack = Arrays.copyOfRange(currentStack, 1, currentStack.length);
-                System.out.println("NEW STACK: " + Arrays.toString(popedStack));
-                return popedStack;
+                if (stackIndex == 0) {
+                    System.out.println("Poping value " + token);
+                    String[] popedStack = Arrays.copyOfRange(currentStack, 1, currentStack.length);
+                    System.out.println("NEW STACK: " + Arrays.toString(popedStack));
+                    return popedStack;
+                } else {
+                    throw new SmallAnalyzerException("Syntax error. Missing character before " + token);
+                }
             }
             for (Ll1TableRow row : rows) {
                 if (row.getNonTerminal().equals(stackValue)) {
                     for (Ll1TableRecord record : row.getRowRecords()) {
+                        System.out.println("Terminal to find in table: " + record.getTerminal() + ". In Row " + row.getNonTerminal());
                         if (record.getTerminal().equals(token) || checkIfLetterMatchesTerminal(token, record.getTerminal()) || checkIfDigit19MatchesTerminal(token, record.getTerminal()) || checkIfDigitMatchesTerminal(token, record.getTerminal())) {
                             System.out.println(stackValue + " can be replaced by " + Arrays.toString(record.getGrammarRule().getRightSide()) + " Rule n." + record.getGrammarRule().getRuleNumber());
                             String[] newStackBefore = {};
