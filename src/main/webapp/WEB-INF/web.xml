@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+    <session-config>
+        <session-timeout>
+            30
+        </session-timeout>
+    </session-config>
+    <display-name>SMALL Analyzer System</display-name>
+    <description>
+        Application used for validation of SMALL programming language
+    </description>
+    <servlet>
+        <servlet-name>AnalyzeServlet</servlet-name>
+        <servlet-class>sk.fiit.sj.small.analyzer.servlet.AnalyzeServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AnalyzeServlet</servlet-name>
+        <url-pattern>/analyze</url-pattern>
+    </servlet-mapping>
+</web-app>

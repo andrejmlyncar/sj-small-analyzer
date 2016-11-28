@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Small Analyzer</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, shrink-to-fit=no, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+
+        <link href="./stylesheets/bootstrap.min.css" rel="stylesheet">
+        <script src='./javascripts/jquery.js'></script>
+        <script src='./javascripts/bootstrap.js'></script>
+        <script src='./javascripts/custom.js'></script>
+
+
+    </head>
+    <body>
+        <h1 class="display-3" style="text-align:center">SMALL ANALYZER APPLICATION</h1>
+        <div id="main-content" class="container-fluid">
+            <div class="form-group">
+                <label for="small-content">Please provide SMALL language sample for validation:</label>
+                <textarea class="form-control" rows="30" id="small-content"></textarea>
+            </div>
+            <div style="text-align: center">
+                <button type="button" onclick="validateInput()" class="btn btn-primary btn-lg">ANALYZE INPUT</button>
+            </div>
+        </div>
+
+
+        <div aria-hidden="true" style=" " class="modal fade" id="error-modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="text-center">
+                            <h4>Validation Failed!</h4>
+                            <div class="modal-message">
+                                <p>Error occurred during validation process input</p>
+                                <p id="error-modal-message"></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default btn-flat" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div aria-hidden="false" style=" " class="modal fade" id="success-modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="text-center">
+                            <h4>Validation Successful!</h4>
+                            <div class="modal-message">
+                                <p>Input is considered as valid.</p>
+                                <p id="correction-modal-message"></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default btn-flat"  data-dismiss="modal" >Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
