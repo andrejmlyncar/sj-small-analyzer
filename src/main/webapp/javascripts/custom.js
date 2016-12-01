@@ -24,14 +24,21 @@ function validateInput() {
     input.text = $("#small-content").val();
     apiCallPost('./analyze', JSON.stringify(input), function (data) {
         if (data.status === "success") {
-            showSuccessModal();
+            showSuccessModal(data.corrections);
         } else {
             showErrorModal(data.error);
         }
     });
 }
 
-function showSuccessModal() {
+function showSuccessModal(corrections) {
+    $("#correction-modal-message").html("");
+    if (corrections !== undefined) {
+        $("#correction-modal-message").append("Found corrections:<br>");
+        $(corrections).each(function (index, item) {
+            $("#correction-modal-message").append(item + "<br>");
+        });
+    }
     $("#success-modal").modal('show');
 }
 

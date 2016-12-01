@@ -24,12 +24,12 @@ public class SmallAnalyzer implements Analyzer {
 
     @Override
     public ValidationResult validateInput(String textInput) throws SmallAnalyzerException {
-        return syntaxAnalysis(lexikalAnalysis(textInput));
+        ValidationResult result = new SmallValidationResult();
+        syntaxAnalysis(lexikalAnalysis(textInput, result), result);
+        return result;
     }
 
-    private ValidationResult syntaxAnalysis(List<String> tokens) throws SmallAnalyzerException {
-        ValidationResult validationResult = new SmallValidationResult();
-
+    private void syntaxAnalysis(List<String> tokens, ValidationResult result) throws SmallAnalyzerException {
         GrammarFactory factory = new GrammarFactory();
         Grammar grammar = factory.createSmallGrammar();
         String[] stack = {"program"};
@@ -47,8 +47,6 @@ public class SmallAnalyzer implements Analyzer {
                 }
             }
         }
-
-        return validationResult;
     }
 
     private String[] updateStack(String[] currentStack, List<Ll1TableRow> rows, String token) throws SmallAnalyzerException {
@@ -125,7 +123,7 @@ public class SmallAnalyzer implements Analyzer {
         return word;
     }
 
-    private List<String> lexikalAnalysis(String textInput) {
+    private List<String> lexikalAnalysis(String textInput, ValidationResult result) {
         List<String> tokens = new ArrayList<>();
 
         String parsedText[] = textInput.replaceAll("\\s+", " ").split("(?!^)");
@@ -146,6 +144,8 @@ public class SmallAnalyzer implements Analyzer {
                 } else {
                     tokens.add(character);
                 }
+            } else if (!character.equals(" ")) {
+                result.addCorrection("Removed unknown character " + character);
             }
         }
 
