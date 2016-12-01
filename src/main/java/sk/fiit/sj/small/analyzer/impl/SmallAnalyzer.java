@@ -127,6 +127,7 @@ public class SmallAnalyzer implements Analyzer {
         List<String> tokens = new ArrayList<>();
 
         String parsedText[] = textInput.replaceAll("\\s+", " ").split("(?!^)");
+        String previousStringCharacter = "";
         for (int i = 0; i < parsedText.length; i++) {
             String character = parsedText[i];
             if (delimiterTerminals.contains(character)) {
@@ -140,7 +141,13 @@ public class SmallAnalyzer implements Analyzer {
                 String tokenWord = getAlphaNumbericalWord(i, parsedText);
                 if (stringTerminals.contains(tokenWord.toUpperCase())) {
                     i += tokenWord.length() - 1;
-                    tokens.add(tokenWord.toUpperCase());
+                    if (previousStringCharacter.equals(tokenWord)) {
+                        System.out.println("Removed duplucity of character " + tokenWord);
+                        result.addCorrection("Removed duplicty of character " + tokenWord);
+                    } else {
+                        tokens.add(tokenWord.toUpperCase());
+                    }
+                    previousStringCharacter = tokenWord;
                 } else {
                     tokens.add(character);
                 }
