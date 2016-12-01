@@ -216,6 +216,7 @@ public class GrammarFactory {
         row.addLl1TableRecord(new Ll1TableRecord(",", rule45));
         row.addLl1TableRecord(new Ll1TableRecord("+", rule45));
         row.addLl1TableRecord(new Ll1TableRecord("-", rule45));
+        row.addLl1TableRecord(new Ll1TableRecord(")", rule45));
         grammar.addLl1TableRow(row);
 
         row = new Ll1TableRow("digit09");
