@@ -12,6 +12,7 @@ public class SmallValidationResult implements ValidationResult {
 
     private final List<String> validationErrors = new ArrayList<>();
     private final List<String> validationCorrections = new ArrayList<>();
+    private String output;
 
     @Override
     public boolean isInputValid() {
@@ -41,6 +42,16 @@ public class SmallValidationResult implements ValidationResult {
     @Override
     public void addError(String error) {
         this.validationErrors.add(error);
-    } 
-   
+    }
+
+    @Override
+    public void setOutput(String output) {
+        this.output = output;
+    }
+
+    @Override
+    public String getOutput() {
+        return this.output;
+    }
+
 }

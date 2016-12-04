@@ -3,6 +3,8 @@ package sk.fiit.sj.small.analyzer.impl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.lang.ArrayUtils;
 import sk.fiit.sj.small.analyzer.Analyzer;
 import sk.fiit.sj.small.analyzer.ValidationResult;
@@ -21,6 +23,8 @@ public class SmallAnalyzer implements Analyzer {
     private final List<String> stringTerminals = new ArrayList<>(Arrays.asList(new String[]{"BEGIN", "END", "READ", "WRITE", "IF", "THEN", "ELSE", "TRUE", "FALSE", "NOT", "AND", "OR"}));
     private final List<String> delimiterTerminals = new ArrayList<>(Arrays.asList(new String[]{"(", ")", ",", ";"}));
     private final List<String> operatorTerminals = new ArrayList<>(Arrays.asList(new String[]{":=", "+", "-"}));
+    private final static Logger LOGGER = Logger.getLogger(SmallAnalyzer.class.getName());
+    private String output;
 
     @Override
     public ValidationResult validateInput(String textInput) throws SmallAnalyzerException {
@@ -30,13 +34,15 @@ public class SmallAnalyzer implements Analyzer {
     }
 
     private void syntaxAnalysis(List<String> tokens, ValidationResult result) throws SmallAnalyzerException {
+        output = "";
         GrammarFactory factory = new GrammarFactory();
         Grammar grammar = factory.createSmallGrammar();
         String[] stack = {"program"};
         for (String token : tokens) {
-            System.out.println("Starting to pop " + token);
+            LOGGER.log(Level.INFO, "Starting to pop {0}", token);
+            output += String.format("\nStarting to pop %s", token);
             while (stack.length != 0) {
-                String[] tmpStack = updateStack(stack, grammar.getLl1Table(), token);
+                String[] tmpStack = updateStack(stack, grammar.getLl1Table(), token, result);
                 if (tmpStack.length >= stack.length) {
                     stack = tmpStack;
                     stack = removeEpsilon(stack);
@@ -47,27 +53,34 @@ public class SmallAnalyzer implements Analyzer {
                 }
             }
         }
+        if (stack.length != 0) {
+            throw new SmallAnalyzerException("Missing statements at the end of the program: " + Arrays.toString(stack), output);
+        }
+        result.setOutput(output);
     }
 
-    private String[] updateStack(String[] currentStack, List<Ll1TableRow> rows, String token) throws SmallAnalyzerException {
+    private String[] updateStack(String[] currentStack, List<Ll1TableRow> rows, String token, ValidationResult result) throws SmallAnalyzerException {
         int stackIndex = 0;
         for (String stackValue : currentStack) {
             if (stackValue.equals(token) || checkIfLetterMatchesTerminal(token, stackValue) || checkIfDigit19MatchesTerminal(token, stackValue) || checkIfDigitMatchesTerminal(token, stackValue)) {
                 if (stackIndex == 0) {
-                    System.out.println("Poping value " + token);
+                    LOGGER.log(Level.INFO, "Poping value {0}", token);
+                    output += String.format("\nPoping value %s", token);
                     String[] popedStack = Arrays.copyOfRange(currentStack, 1, currentStack.length);
-                    System.out.println("NEW STACK: " + Arrays.toString(popedStack));
+                    LOGGER.log(Level.INFO, "NEW STACK: {0}", Arrays.toString(popedStack));
+                    output += String.format("\nNEW STACK: %s", Arrays.toString(popedStack));
                     return popedStack;
                 } else {
-                    throw new SmallAnalyzerException("Syntax error. Missing character before " + token);
+                    throw new SmallAnalyzerException("Syntax error. Missing character before " + token, output);
                 }
             }
             for (Ll1TableRow row : rows) {
                 if (row.getNonTerminal().equals(stackValue)) {
                     for (Ll1TableRecord record : row.getRowRecords()) {
-                        System.out.println("Terminal to find in table: " + record.getTerminal() + ". In Row " + row.getNonTerminal());
+                        LOGGER.log(Level.INFO, "Terminal to find in table: {0}. In Row {1}", new Object[]{record.getTerminal(), row.getNonTerminal()});
                         if (record.getTerminal().equals(token) || checkIfLetterMatchesTerminal(token, record.getTerminal()) || checkIfDigit19MatchesTerminal(token, record.getTerminal()) || checkIfDigitMatchesTerminal(token, record.getTerminal())) {
-                            System.out.println(stackValue + " can be replaced by " + Arrays.toString(record.getGrammarRule().getRightSide()) + " Rule n." + record.getGrammarRule().getRuleNumber());
+                            LOGGER.log(Level.INFO, "{0} can be replaced by {1} Rule n.{2}", new Object[]{stackValue, Arrays.toString(record.getGrammarRule().getRightSide()), record.getGrammarRule().getRuleNumber()});
+                            output += String.format("\n%s can be replaced by %s Rule n.%d", stackValue, Arrays.toString(record.getGrammarRule().getRightSide()), record.getGrammarRule().getRuleNumber());
                             String[] newStackBefore = {};
                             String[] newStackAfter = {};
                             if (stackIndex != 0) {
@@ -77,7 +90,8 @@ public class SmallAnalyzer implements Analyzer {
                                 newStackAfter = Arrays.copyOfRange(currentStack, stackIndex + 1, currentStack.length);
                             }
                             String[] mergedStack = (String[]) ArrayUtils.addAll((String[]) ArrayUtils.addAll(newStackBefore, record.getGrammarRule().getRightSide()), newStackAfter);
-                            System.out.println("NEW STACK: " + Arrays.toString(mergedStack));
+                            LOGGER.log(Level.INFO, "NEW STACK: {0}", Arrays.toString(mergedStack));
+                            output += String.format("\nNEW STACK: %s", Arrays.toString(mergedStack));
                             return mergedStack;
                         }
                     }
@@ -85,7 +99,7 @@ public class SmallAnalyzer implements Analyzer {
             }
             stackIndex++;
         }
-        throw new SmallAnalyzerException("Could not update stack. Invalid placement of token " + token);
+        throw new SmallAnalyzerException("Could not update stack. Invalid placement of token " + token, output);
     }
 
     private String[] removeEpsilon(String[] stack) {
@@ -142,7 +156,7 @@ public class SmallAnalyzer implements Analyzer {
                 if (stringTerminals.contains(tokenWord.toUpperCase())) {
                     i += tokenWord.length() - 1;
                     if (previousStringCharacter.equals(tokenWord)) {
-                        System.out.println("Removed duplucity of character " + tokenWord);
+                        LOGGER.log(Level.INFO, "Removed duplucity of character {0}", tokenWord);
                         result.addCorrection("Removed duplicty of character " + tokenWord);
                     } else {
                         tokens.add(tokenWord.toUpperCase());
@@ -156,11 +170,10 @@ public class SmallAnalyzer implements Analyzer {
             }
         }
 
-        System.out.println("TOKENS:");
+        LOGGER.log(Level.INFO, "TOKENS DETECTED:");
         for (String str : tokens) {
-            System.out.println(str);
+            LOGGER.log(Level.INFO, str);
         }
-
         return tokens;
     }
 }

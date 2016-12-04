@@ -6,11 +6,19 @@ package sk.fiit.sj.small.analyzer.exception;
  */
 public class SmallAnalyzerException extends Exception {
 
-    public SmallAnalyzerException(String message) {
+    private final String validationOutput;
+
+    public SmallAnalyzerException(String message, String validationOutput) {
         super(message);
+        this.validationOutput = validationOutput;
     }
 
-    public SmallAnalyzerException(String message, Throwable cause) {
+    public SmallAnalyzerException(String message, Throwable cause, String validationOutput) {
         super(message, cause);
+        this.validationOutput = validationOutput;
+    }
+
+    public String getValidationOutput() {
+        return this.validationOutput;
     }
 }

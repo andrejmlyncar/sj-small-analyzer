@@ -28,6 +28,7 @@ function validateInput() {
         } else {
             showErrorModal(data.error);
         }
+        $("#small-logs").val(data.output);
     });
 }
 

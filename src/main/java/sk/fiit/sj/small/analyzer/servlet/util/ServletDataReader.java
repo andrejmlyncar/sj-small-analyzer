@@ -19,7 +19,7 @@ public class ServletDataReader {
             JsonObject jsonObject = jsonReader.readObject();
             return jsonObject;
         } catch (IOException ex) {
-            throw new SmallAnalyzerException("Error parsing request data: Invalid Json", ex);
+            throw new SmallAnalyzerException("Error parsing request data: Invalid Json", ex, "");
         }
     }
 }

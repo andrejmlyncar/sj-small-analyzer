@@ -2,6 +2,7 @@ package sk.fiit.sj.small.analyzer.servlet;
 
 import sk.fiit.sj.small.analyzer.exception.SmallAnalyzerException;
 import java.io.IOException;
+import java.math.BigDecimal;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
@@ -37,12 +38,12 @@ public class AnalyzeServlet extends HttpServlet {
                 for (String correction : result.getCorrections()) {
                     jsonArrayBuilder.add(correction);
                 }
-                response.getWriter().write(Json.createObjectBuilder().add("status", "success").add("corrections", jsonArrayBuilder.build()).build().toString());
+                response.getWriter().write(Json.createObjectBuilder().add("status", "success").add("corrections", jsonArrayBuilder.build()).add("output", result.getOutput()).build().toString());
             } else {
-                response.getWriter().write(Json.createObjectBuilder().add("status", "success").build().toString());
+                response.getWriter().write(Json.createObjectBuilder().add("status", "success").add("output", result.getOutput()).build().toString());
             }
         } catch (SmallAnalyzerException ex) {
-            response.getWriter().write(Json.createObjectBuilder().add("status", "failed").add("error", ex.getMessage()).build().toString());
+            response.getWriter().write(Json.createObjectBuilder().add("status", "failed").add("error", ex.getMessage()).add("output", ex.getValidationOutput()).build().toString());
         }
     }
 
