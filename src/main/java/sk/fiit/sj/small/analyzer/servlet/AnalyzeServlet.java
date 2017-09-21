@@ -2,7 +2,6 @@ package sk.fiit.sj.small.analyzer.servlet;
 
 import sk.fiit.sj.small.analyzer.exception.SmallAnalyzerException;
 import java.io.IOException;
-import java.math.BigDecimal;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
